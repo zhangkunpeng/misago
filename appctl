@@ -26,6 +26,7 @@ dir_paths=(
     "./misago/static"
     "./misago/avatargallery"
     "./misago/theme"
+    "./config/vhost.d"
 )
 
 # Find docker compose path
@@ -37,9 +38,6 @@ error() {
 }
 
 require_setup() {
-    for dir_path in "${dir_paths[@]}"; do
-        mkdir -p $dir_path
-    done 
     for env_path in "${env_paths[@]}"; do
         if [ ! -e $env_path ]; then
             error "You need to setup your site using \"./appctl setup\" before you will be able to use this option."
@@ -128,6 +126,9 @@ invalid_argument() {
 }
 
 setup_env() {
+    for dir_path in "${dir_paths[@]}"; do
+        mkdir -p $dir_path
+    done 
     # 创建环境变量
     # Test if env files already exist
     rebuild=y
