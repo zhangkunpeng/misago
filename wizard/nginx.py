@@ -43,6 +43,7 @@ def create_nginx_location_config(hostname):
         config_dst.unlink()
 
     safe_copy(VHOST_LOCATION_CONFIG, config_dst)
+    safe_copy(VHOST_LOCATION_CONFIG, Path(os.path.join(VHOSTD_DIR, hostname)))
     return True
 
 

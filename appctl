@@ -61,6 +61,7 @@ intro() {
     echo "Setup and upgrade:"
     echo
     echo "    ${BOLD}env${NORMAL}               create new envs or list envs."
+    echo "    ${BOLD}ssl${NORMAL}               create ssl."
     echo "    ${BOLD}setup${NORMAL}             setup new Misago site."
     echo "    ${BOLD}upgrade${NORMAL}           backup, rebuild, migrate and collect static."
     echo
@@ -143,10 +144,17 @@ setup_env() {
     fi
 }
 
+setup_ssl() {
+    ssl_file=./config/$1
+    openssl genrsa -out $ssl_file.key 2048
+    openssl req -new -key $ssl_file.key -out $ssl_file.csr
+    openssl x509 -req -in $ssl_file.csr -signkey $ssl_file.key -days 3650 -out $ssl_file.crt
+}
+
 # Run new site setup
 setup() {
     setup_env
-
+    setup_ssl
     read -p "Initialize default database? [Y/n]: " initialize_default_database
     # Run docker build
     docker-compose build --no-cache --force-rm --pull

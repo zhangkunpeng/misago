@@ -26,9 +26,9 @@ LANGUAGE_SEARCH_CONFIGS = {
 
 def run_locale_wizard(env_file):
     locale_prompt = (
-        'Enter the language code for your site\'s locale (eg. "pl" or "en-us"): '
+        'Enter the language code for your site\'s locale (eg. "pl" or "zh-hans"): '
     )
-    locale = None
+    locale = "zh-hans"
 
     while not locale:
         locale = input(locale_prompt).strip().lower().replace("_", "-")

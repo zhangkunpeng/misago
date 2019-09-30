@@ -7,9 +7,9 @@ from utils import input_bool, print_setup_changed_message
 def run_timezone_wizard(env_file):
     timezone_prompt = (
         "Enter the TZ Database (https://bit.ly/2glGdNY) timezone name for your site "
-        '(eg. "Europe/Warsaw"): '
+        '(eg. "Asia/Shanghai"): '
     )
-    timezone = None
+    timezone = "Asia/Shanghai"
 
     while not timezone:
         timezone = input(timezone_prompt).strip().replace("\\", "/")
