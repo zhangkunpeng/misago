@@ -26,6 +26,8 @@ dir_paths=(
     "./misago/static"
     "./misago/avatargallery"
     "./misago/theme"
+    "./misago/theme/static"
+    "./misago/theme/templates"
     "./config/vhost.d"
 )
 
