@@ -14,6 +14,19 @@ env_paths=(
     $misago_env_path
     "./config/postgres.env"
 )
+dir_paths=(
+    "./config"
+    "./backups"
+    "./certs"
+    "./logs"
+    "./psql-data"
+    "./redis-data"
+    "./misago"
+    "./misago/media"
+    "./misago/static"
+    "./misago/avatargallery"
+    "./misago/theme"
+)
 
 # Find docker compose path
 docker_compose=$(which docker-compose)
@@ -24,6 +37,9 @@ error() {
 }
 
 require_setup() {
+    for dir_path in "${dir_paths[@]}"; do
+        mkdir -p $dir_path
+    done 
     for env_path in "${env_paths[@]}"; do
         if [ ! -e $env_path ]; then
             error "You need to setup your site using \"./appctl setup\" before you will be able to use this option."
