@@ -1,0 +1,92 @@
+version: '3.0'
+services:
+
+  nginx:
+    image: jwilder/nginx-proxy
+    restart: always
+    networks:
+      - misago
+    ports:
+      - "8080:80"
+      - "8443:443"
+    volumes:
+      - ./certs:/etc/nginx/certs
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - ./misago/media:/misago/media:z
+      - ./misago/static:/misago/static:z
+      - ./config/vhost.d:/etc/nginx/vhost.d:z
+      - ./logs/nginx:/var/log/nginx:z
+
+  postgres:
+    image: postgres
+    restart: unless-stopped
+    networks:
+      - misago
+    env_file:
+      - ./config/postgres.env
+    volumes:
+      - misago-database:/var/lib/postgresql/data
+
+  redis:
+    image: redis
+    restart: unless-stopped
+    networks:
+      - misago
+    volumes:
+      - ./redis-data:/data
+
+  misago:
+    image: registry-vpc.cn-shanghai.aliyuncs.com/stx/misago:0.23
+    restart: unless-stopped
+    networks:
+      misago:
+        aliases:
+          - misago
+    environment:
+      - POSTGRES_HOST=postgres
+      - SSL_POLICY=Mozilla-Modern
+      - VIRTUAL_PROTO=uwsgi
+    env_file:
+      - ./config/misago.env
+      - ./config/postgres.env
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - ./misago/media:/misago/media:z
+      - ./misago/static:/misago/static:z
+      - ./misago/avatargallery:/misago/avatargallery:ro
+      - ./misago/theme:/misago/theme:ro
+      - ./backups:/misago/backups:Z
+      - ./logs:/misago/logs:z
+
+  misago-celery:
+    image: registry-vpc.cn-shanghai.aliyuncs.com/stx/misago:0.23
+    command: celery -A misagodocker worker --loglevel=info
+    restart: unless-stopped
+    networks:
+      misago:
+        aliases:
+          - misago
+    environment:
+      - POSTGRES_HOST=postgres
+    env_file:
+      - ./config/misago.env
+      - ./config/postgres.env
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - ./misago/media:/misago/media:z
+      - ./misago/static:/misago/static:z
+      - ./misago/theme:/misago/theme:ro
+      - ./logs:/misago/logs:z
+
+networks:
+  misago:
+
+volumes:
+#  nginx-certs:
+#  nginx-html:
+  misago-database:
+#  misago-redis:
