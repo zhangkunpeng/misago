@@ -146,7 +146,7 @@ setup_env() {
 setup_ssl() {
     require_setup
     . $misago_env_path
-    ssl_file=./config/$VIRTUAL_HOST
+    ssl_file=./certs/$VIRTUAL_HOST
     openssl genrsa -out $ssl_file.key 2048
     openssl req -new -key $ssl_file.key -out $ssl_file.csr
     openssl x509 -req -in $ssl_file.csr -signkey $ssl_file.key -days 3650 -out $ssl_file.crt
