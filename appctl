@@ -114,7 +114,6 @@ invalid_argument() {
 setup_env() {
     # 创建环境变量
     # Test if env files already exist
-    let env_exist
     rebuild=y
     for env_path in "${env_paths[@]}"; do
         if [ -e $env_path ]; then
@@ -145,7 +144,9 @@ setup_env() {
 }
 
 setup_ssl() {
-    ssl_file=./config/$1
+    require_setup
+    . $misago_env_path
+    ssl_file=./config/$VIRTUAL_HOST
     openssl genrsa -out $ssl_file.key 2048
     openssl req -new -key $ssl_file.key -out $ssl_file.csr
     openssl x509 -req -in $ssl_file.csr -signkey $ssl_file.key -days 3650 -out $ssl_file.crt
@@ -436,6 +437,8 @@ if [[ $1 ]]; then
         upgrade
     elif [[ $1 = "env" ]]; then
         setup_env
+    elif [[ $1 = "ssl" ]]; then
+        setup_ssl $2
     elif [[ $1 = "up" ]]; then
         start_containers
     elif [[ $1 = "start" ]]; then
