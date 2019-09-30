@@ -25,7 +25,7 @@ services:
     env_file:
       - ./config/postgres.env
     volumes:
-      - misago-database:/var/lib/postgresql/data
+      - ./psql-data:/var/lib/postgresql/data
 
   redis:
     image: redis
@@ -85,8 +85,8 @@ services:
 networks:
   misago:
 
-volumes:
+#volumes:
 #  nginx-certs:
 #  nginx-html:
-  misago-database:
+#  misago-database:
 #  misago-redis:
